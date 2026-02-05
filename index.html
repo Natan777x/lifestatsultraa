@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeStats Ultra | Wealth Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <aside class="sidebar-premium">
+        <div class="side-brand">
+            <div class="brand-hex"><i class="fas fa-crown"></i></div>
+        </div>
+        <nav class="side-nav">
+            <div class="nav-indicator"></div>
+            <a href="#" class="nav-link active" onclick="showPage(0)"><i class="fas fa-home-alt"></i></a>
+            <a href="#" class="nav-link" onclick="showPage(1)"><i class="fas fa-file-invoice-dollar"></i></a>
+            <a href="#" class="nav-link" onclick="showPage(2)"><i class="fas fa-wallet"></i></a>
+            <a href="#" class="nav-link" onclick="showPage(3)"><i class="fas fa-table-list"></i></a>
+            <a href="#" class="nav-link" onclick="showPage(4)"><i class="fas fa-business-time"></i></a>
+            <a href="#" class="nav-link" onclick="showPage(5)"><i class="fas fa-credit-card"></i></a>
+        </nav>
+        <div class="side-footer">
+            <a href="https://wa.me/5521959025557" target="_blank" class="util-btn wa-btn"><i class="fab fa-whatsapp"></i></a>
+            <button id="theme-toggle" class="util-btn"><i class="fas fa-moon"></i></button>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="top-header">
+            <div class="header-text">
+                <h1 id="page-title">Painel de Inteligência Financeira</h1>
+                <p id="page-desc">Gestão estratégica e projeções de patrimônio</p>
+            </div>
+            <button class="btn-reset-premium" onclick="clearData()">
+                <i class="fas fa-power-off"></i> Resetar Sistema
+            </button>
+        </header>
+
+        <div id="page-finance" class="dashboard-page">
+            <div class="dashboard-grid">
+                <div class="left-col">
+                    <section class="glass-card animate-in">
+                        <h2 class="card-title"><i class="fas fa-money-bill-trend-up"></i> Ganhos Mensais</h2>
+                        <div class="field-group">
+                            <label>Renda Mensal Total (Líquida)</label>
+                            <div class="input-with-icon">
+                                <span>R$</span>
+                                <input type="number" class="inc-input" id="in-total" placeholder="0,00">
+                            </div>
+                        </div>
+                    </section>
+                    <section class="glass-card animate-in" style="animation-delay: 0.1s;">
+                        <h2 class="card-title"><i class="fas fa-receipt"></i> Centro de Custos Detalhado</h2>
+                        <div class="inputs-subgrid">
+                            <div class="field"><label>Aluguel / Condomínio</label><input type="number" class="exp-input" data-cat="0" id="e-alu"></div>
+                            <div class="field"><label>Energia / Água / Net</label><input type="number" class="exp-input" data-cat="0" id="e-con"></div>
+                            <div class="field"><label>Alimentação (Mercado)</label><input type="number" class="exp-input" data-cat="0" id="e-ali"></div>
+                            <div class="field"><label>Lazer / Hobbies</label><input type="number" class="exp-input" data-cat="1" id="e-laz"></div>
+                            <div class="field"><label>Restaurantes</label><input type="number" class="exp-input" data-cat="1" id="e-res"></div>
+                            <div class="field"><label>Delivery (Apps)</label><input type="number" class="exp-input" data-cat="1" id="e-del"></div>
+                            <div class="field"><label>Assinaturas (Streaming)</label><input type="number" class="exp-input" data-cat="1" id="e-ass"></div>
+                            <div class="field"><label>Saúde / Farmácia</label><input type="number" class="exp-input" data-cat="2" id="e-sau"></div>
+                            <div class="field"><label>Academia / Bem-estar</label><input type="number" class="exp-input" data-cat="2" id="e-aca"></div>
+                            <div class="field"><label>Transporte (Uber/Bus)</label><input type="number" class="exp-input" data-cat="3" id="e-tra"></div>
+                            <div class="field"><label>Combustível</label><input type="number" class="exp-input" data-cat="3" id="e-com"></div>
+                            <div class="field"><label>Educação / Cursos</label><input type="number" class="exp-input" data-cat="3" id="e-edu"></div>
+                            <div class="field"><label>Pets (Ração/Vet)</label><input type="number" class="exp-input" data-cat="3" id="e-pet"></div>
+                            <div class="field"><label>Pensão / Ajudas</label><input type="number" class="exp-input" data-cat="3" id="e-pen"></div>
+                            <div class="field"><label>Imprevistos / Outros</label><input type="number" class="exp-input" data-cat="3" id="e-out"></div>
+                        </div>
+                    </section>
+                </div>
+                <div class="right-col">
+                    <div class="balance-hero animate-in" style="animation-delay: 0.2s;">
+                        <span class="label">SALDO DISPONÍVEL</span>
+                        <h2 id="res-balance">R$ 0,00</h2>
+                        <div class="health-meter">
+                            <div class="meter-track"><div id="meter-fill"></div></div>
+                            <span id="health-txt">Aguardando dados...</span>
+                        </div>
+                    </div>
+                    <div class="glass-card animate-in" style="animation-delay: 0.3s;">
+                        <h2 class="card-title"><i class="fas fa-hourglass-start"></i> Acúmulo no Tempo</h2>
+                        <div class="projection-grid custom-scroll" id="proj-container"></div>
+                    </div>
+                    <div class="glass-card animate-in" style="animation-delay: 0.4s;">
+                        <h2 class="card-title"><i class="fas fa-lightbulb"></i> Insights IA</h2>
+                        <div class="insight-box" id="ins-reserva">Defina seus gastos para calcular a reserva.</div>
+                        <div class="insight-box" id="ins-compra" style="border-left-color: var(--primary);">Calculando poder de compra...</div>
+                    </div>
+                    <div class="glass-card chart-box animate-in" style="animation-delay: 0.5s;">
+                        <canvas id="financeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-irpf" class="dashboard-page" style="display: none;">
+            <div class="dashboard-grid">
+                <div class="left-col">
+                    <section class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-wallet"></i> Dados de Entrada IRPF</h2>
+                        <div class="field-group">
+                            <label>Salário Bruto Mensal</label>
+                            <div class="input-with-icon">
+                                <span>R$</span>
+                                <input type="number" id="salario-bruto-irpf" placeholder="0,00" class="irpf-input">
+                            </div>
+                        </div>
+                        <div class="field-group" style="margin-top: 20px;">
+                            <label>Número de Dependentes</label>
+                            <input type="number" id="dependentes-irpf" value="0" class="irpf-input">
+                        </div>
+                    </section>
+                </div>
+                <div class="right-col">
+                    <div class="balance-hero">
+                        <span class="label">SALÁRIO LÍQUIDO APÓS IMPOSTO</span>
+                        <h2 id="res-liquido-irpf">R$ 0,00</h2>
+                        <div class="health-meter">
+                            <div class="meter-track"><div id="meter-fill-irpf"></div></div>
+                            <span id="txt-imposto-irpf">Aguardando dados...</span>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-list-check"></i> Detalhamento Fiscal</h2>
+                        <div id="detalhes-imposto-irpf" class="insight-box-details"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-history" class="dashboard-page" style="display: none;">
+            <div class="dashboard-grid">
+                <div class="left-col">
+                    <section class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-history"></i> Parâmetros de Tempo</h2>
+                        <div class="field-group">
+                            <label>Valor Atual (Referência 2026)</label>
+                            <div class="input-with-icon">
+                                <span>R$</span>
+                                <input type="number" id="hist-valor" placeholder="1000,00" class="hist-input">
+                            </div>
+                        </div>
+                        <div class="field-group" style="margin-top: 25px;">
+                            <label>Retroceder para o Ano</label>
+                            <div class="year-selector-container">
+                                <div class="year-option active" onclick="selectYear('1994', this)">1994</div>
+                                <div class="year-option" onclick="selectYear('2000', this)">2000</div>
+                                <div class="year-option" onclick="selectYear('2005', this)">2005</div>
+                                <div class="year-option" onclick="selectYear('2010', this)">2010</div>
+                                <div class="year-option" onclick="selectYear('2015', this)">2015</div>
+                                <div class="year-option" onclick="selectYear('2020', this)">2020</div>
+                                <input type="hidden" id="hist-ano" value="1994">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="right-col">
+                    <div class="balance-hero">
+                        <span class="label">EQUIVALENTE NO PASSADO</span>
+                        <h2 id="res-hist-valor">R$ 0,00</h2>
+                        <div class="health-meter">
+                            <div class="meter-track"><div id="meter-fill-hist"></div></div>
+                            <span id="txt-hist-info">Dados baseados no IPCA acumulado.</span>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-magnifying-glass-chart"></i> Detalhamento de Poder de Compra</h2>
+                        <div id="detalhes-historico" class="insight-box-details"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-dividend" class="dashboard-page" style="display: none;">
+            <div class="dashboard-grid">
+                <div class="left-col">
+                    <section class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-chart-pie"></i> Projeção de Renda Passiva</h2>
+                        <div class="field-group">
+                            <label>Valor Total Investido</label>
+                            <div class="input-with-icon">
+                                <span>R$</span>
+                                <input type="number" id="div-investido" placeholder="0,00" class="div-input">
+                            </div>
+                        </div>
+                        <div class="field-group" style="margin-top: 20px;">
+                            <label>Dividend Yield Anual (%)</label>
+                            <input type="number" id="div-yield" value="10" class="div-input">
+                        </div>
+                    </section>
+                </div>
+                <div class="right-col">
+                    <div class="balance-hero">
+                        <span class="label">RENDA MENSAL ESTIMADA</span>
+                        <h2 id="res-div-mensal">R$ 0,00</h2>
+                        <div class="health-meter">
+                            <div class="meter-track"><div id="meter-fill-div"></div></div>
+                            <span id="txt-div-info">Simulação de recebimento.</span>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-bullseye"></i> Detalhamento de Rendimentos</h2>
+                        <div id="detalhes-dividendos" class="insight-box-details"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-overtime" class="dashboard-page" style="display: none;">
+            <div class="dashboard-grid">
+                <div class="left-col">
+                    <section class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-clock"></i> Parâmetros de Trabalho</h2>
+                        <div class="field-group">
+                            <label>Salário Bruto Mensal</label>
+                            <div class="input-with-icon">
+                                <span>R$</span>
+                                <input type="number" id="over-salario" placeholder="0,00" class="over-input">
+                            </div>
+                        </div>
+                        <div class="field-group" style="margin-top: 20px;">
+                            <label>Jornada Mensal (Horas)</label>
+                            <input type="number" id="over-jornada" value="220" class="over-input">
+                        </div>
+                        <div class="field-group" style="margin-top: 20px;">
+                            <label>Total de Horas Extras</label>
+                            <input type="number" id="over-horas" placeholder="0" class="over-input">
+                        </div>
+                        <div class="field-group" style="margin-top: 25px;">
+                            <label>Adicional (%)</label>
+                            <div class="year-selector-container">
+                                <div class="year-option active" onclick="selectOvertimePerc(50, this)">50%</div>
+                                <div class="year-option" onclick="selectOvertimePerc(100, this)">100%</div>
+                                <input type="hidden" id="over-perc" value="50">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="right-col">
+                    <div class="balance-hero">
+                        <span class="label">TOTAL DE HORAS EXTRAS</span>
+                        <h2 id="res-over-total">R$ 0,00</h2>
+                        <div class="health-meter">
+                            <div class="meter-track"><div id="meter-fill-over"></div></div>
+                            <span id="txt-over-info">Cálculo baseado na CLT.</span>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-magnifying-glass-dollar"></i> Detalhamento do Cálculo</h2>
+                        <div id="detalhes-overtime" class="insight-box-details"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-installment" class="dashboard-page" style="display: none;">
+            <div class="dashboard-grid">
+                <div class="left-col">
+                    <section class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-credit-card"></i> Dados da Compra</h2>
+                        <div class="field-group">
+                            <label>Valor do Produto (À Vista)</label>
+                            <div class="input-with-icon">
+                                <span>R$</span>
+                                <input type="number" id="inst-valor" placeholder="1.000,00" class="inst-input">
+                            </div>
+                        </div>
+                        <div class="field-group" style="margin-top: 20px;">
+                            <label>Número de Parcelas</label>
+                            <input type="number" id="inst-parcelas" value="12" class="inst-input">
+                        </div>
+                        <div class="field-group" style="margin-top: 20px;">
+                            <label>Taxa de Juros Mensal (%)</label>
+                            <input type="number" id="inst-juros" value="2.5" class="inst-input">
+                        </div>
+                    </section>
+                </div>
+                <div class="right-col">
+                    <div class="balance-hero">
+                        <span class="label">VALOR DA PARCELA MENSAL</span>
+                        <h2 id="res-inst-mensal">R$ 0,00</h2>
+                        <div class="health-meter">
+                            <div class="meter-track"><div id="meter-fill-inst"></div></div>
+                            <span id="txt-inst-info">Cálculo pela Tabela Price.</span>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <h2 class="card-title"><i class="fas fa-chart-line"></i> Análise de Custo Efetivo</h2>
+                        <div id="detalhes-installment" class="insight-box-details"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
