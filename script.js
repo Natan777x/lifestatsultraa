@@ -54,7 +54,6 @@ function updateFinance() {
         document.getElementById('ins-reserva').innerHTML = `💡 Reserva ideal (6 meses): <b>${(gastos * 6).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</b>`;
     }
 
-    // ACÚMULO NO TEMPO (FIX)
     const projCont = document.getElementById('proj-container');
     projCont.innerHTML = "";
     if(saldo > 0) {
@@ -66,7 +65,6 @@ function updateFinance() {
         projCont.innerHTML = "<p style='font-size:0.8rem; color:var(--text-dim)'>Saldo insuficiente para projeção.</p>";
     }
 
-    // PODER DE COMPRA (FIX)
     const insCompra = document.getElementById('ins-compra');
     if(renda > 0) {
         const p1994 = renda * 0.12;
@@ -89,9 +87,20 @@ function updateIRPF() {
     else if (base > 2826) { aliq = 0.15; ded = 381; }
     else if (base > 2259) { aliq = 0.075; ded = 169; }
     const imp = Math.max((base * aliq) - ded, 0);
+    
     document.getElementById('res-liquido-irpf').innerText = (bruto - inss - imp).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     document.getElementById('txt-imposto-irpf').innerText = imp > 0 ? `Retenção de ${imp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` : "Isento de IRPF";
     document.getElementById('meter-fill-irpf').style.width = Math.min((imp/bruto)*400 || 0, 100) + '%';
+    
+    // CORREÇÃO DO BUG: Escrita do detalhamento fiscal
+    const detalhesDiv = document.getElementById('detalhes-imposto-irpf');
+    if (detalhesDiv) {
+        detalhesDiv.innerHTML = `
+            <div class="detail-row"><span class="detail-label">Base de Cálculo:</span><span class="detail-value">${base.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
+            <div class="detail-row"><span class="detail-label">Desconto INSS:</span><span class="detail-value">${inss.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>
+            <div class="detail-row"><span class="detail-label">Alíquota:</span><span class="detail-value">${(aliq*100).toFixed(1)}%</span></div>
+        `;
+    }
     saveState();
 }
 
@@ -120,6 +129,8 @@ function updateDividends() {
     const mensal = (inv * (yld/100)) / 12;
     document.getElementById('res-div-mensal').innerText = mensal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     document.getElementById('meter-fill-div').style.width = Math.min((mensal/2000)*100, 100) + '%';
+    const detalhesDiv = document.getElementById('detalhes-dividendos');
+    if(detalhesDiv) detalhesDiv.innerHTML = `<div class="detail-row"><span class="detail-label">Renda Anual:</span><span class="detail-value">${(mensal*12).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>`;
     saveState();
 }
 
@@ -139,6 +150,8 @@ function updateOvertime() {
     const total = vExtra * hrs;
     document.getElementById('res-over-total').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     document.getElementById('meter-fill-over').style.width = Math.min((total/sal)*100, 100) + '%';
+    const detalhesDiv = document.getElementById('detalhes-overtime');
+    if(detalhesDiv) detalhesDiv.innerHTML = `<div class="detail-row"><span class="detail-label">Valor Hora Extra:</span><span class="detail-value">${vExtra.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>`;
     saveState();
 }
 
@@ -151,7 +164,8 @@ function updateInstallment() {
     document.getElementById('res-inst-mensal').innerText = pmt.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     const total = pmt * par;
     document.getElementById('meter-fill-inst').style.width = Math.min(((total-val)/val)*100, 100) + '%';
-    document.getElementById('detalhes-installment').innerHTML = `<div class="detail-row"><span class="detail-label">Total a Prazo:</span><span class="detail-value">${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>`;
+    const detalhesDiv = document.getElementById('detalhes-installment');
+    if(detalhesDiv) detalhesDiv.innerHTML = `<div class="detail-row"><span class="detail-label">Total Pago:</span><span class="detail-value">${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>`;
     saveState();
 }
 
